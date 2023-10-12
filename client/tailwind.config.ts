@@ -8,10 +8,12 @@ const config: Config = {
   ],
   theme: {
     extend: {
-     colors:{
+      colors:{
+
         accent:"#3aaf9f",
-        accentDark:"#297c71 "
-     },
+        accentDark:"#297c71"
+      }
+
     },
   },
   plugins: [],
