@@ -1,11 +1,52 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Link from "next/link";
+import axios from "axios";
+import {toast} from "react-toastify"
+
+
+import {baseURL} from '../utils/constant'
 import { BsFacebook, BsInstagram, BsGoogle } from "react-icons/Bs";
+import { useRouter } from "next/navigation";
+import { isLogin } from "@/utils/auth";
+
 const SignUp = () => {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const router =useRouter()
+
+  useEffect(()=>{
+    const authenticate=async()=>{
+      
+
+    if(await isLogin()){
+      router.push("/")
+    }
+    }
+    authenticate()
+  },[])
+
+  const handleSubmit=(e:React.FormEvent)=>{
+    e.preventDefault();
+
+    const payload={
+      name,
+      email,
+      password,
+    }
+    axios.post(`${baseURL}/signup`,payload)
+    .then((res)=>{
+    toast.success(
+    <div>
+      Account Created Successfully <br />
+      Please Login
+    </div>
+   );
+   router.push("/login")
+    }).catch((err)=>console.log(err))
+  }
 
   return (
     <div className="grid grid-cols-[30%,1fr]">
@@ -44,25 +85,26 @@ const SignUp = () => {
             Or use your email account for registration
           </p>
 
-          <form className="flex w-[300px] mx-auto flex-col pt-2 gap-2">
+          <form onSubmit={handleSubmit} className="flex w-[300px] mx-auto flex-col pt-2 gap-2">
             <input
               value={name}
-              onChange={(e) => setName(e.target.name)}
+              onChange={(e) => setName(e.target.value)}
+              
               type="text"
               placeholder="Name" 
               className="input_style"
             />
              <input
               value={email}
-              onChange={(e) => setEmail(e.target.name)}
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               placeholder="Email" 
               className="input_style"
             />
              <input
               value={password}
-              onChange={(e) => setPassword(e.target.name)}
-            type="password"
+              onChange={(e) => setPassword(e.target.value)}
+            type="current-password"
               placeholder="password" 
               className="input_style"
             />
